@@ -9,15 +9,15 @@ export const errorMiddleware: ErrorRequestHandler = (
   __: NextFunction,
 ) => {
   if (err instanceof ZodError) {
-    const errors = err.errors.map((error) => ({
-      field: error.path.join('.'),
-      message: error.message,
-    }));
+    // const errors = err.errors.map((error) => ({
+    //   field: error.path.join('.'),
+    //   message: error.message,
+    // }));
 
     res.status(400).json({
       status: 'fail',
-      message: 'Invalid data',
-      data: errors,
+      message: '☄️Invalid data',
+      data: err.errors,
     });
     return;
   }
@@ -26,6 +26,7 @@ export const errorMiddleware: ErrorRequestHandler = (
     res.status(404).json({
       status: 'fail',
       message: err.message,
+      error: err.message.split('\n').at(-1),
     });
     return;
   }

@@ -1,8 +1,35 @@
+### Create new user
 POST http://localhost:8000/api/v1/users
 Content-Type: application/json
 
 {
-  "name": "Luna",
-  "email": 10,
-  "age": "5"
+  "name": "Sally",
+  "email": "sally@test4.com",
+  "age": 40,
+  "writtenPosts": {
+    "create": [
+      {
+        "title": "Test",
+        "averageRating": 2.4
+      },
+      {
+        "title": "My second post",
+        "averageRating": 4.5
+      }
+    ]
+  }
+}
+
+
+### Get user
+GET http://localhost:8000/api/v1/users
+
+### Update user
+PATCH http://localhost:8000/api/v1/users/0e35f88e-5080-4b42-a813-16ff44515165
+Content-Type: application/json
+
+{
+  "userPreference": {
+    "disconnect": true
+  }
 }
