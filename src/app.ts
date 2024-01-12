@@ -1,108 +1,103 @@
-import express, { Express } from 'express';
-
 import { PrismaClient } from '@prisma/client';
-
-import {
-  UserCreateInputSchema,
-  UserUpdateInputSchema,
-} from '../prisma/generated/zod/index.js';
-import { errorMiddleware } from './middlewares/error.middleware.js';
-
-export const app: Express = express();
-
-app.use(express.json());
 
 const prisma = new PrismaClient();
 
-// async function main() {
-//   const user = await prisma.user.findUnique({
-//     where: {
-//       age_name: {
-//         age: 24,
-//         name: 'Kyle',
-//       },
-//     },
-//   });
-//   console.log(user);
-//   process.exit(0);
-// }
+async function main() {
+  // Create User
+  // const user = await prisma.user.create({
+  //   data: {
+  //     name: 'John Doe',
+  //     email: 'john@gmail.com',
+  //   },
+  // });
 
-// main()
-//   .catch((e) => {
-//     console.error(e);
-//     process.exit(1);
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect();
-//   });
+  // Get all users
+  // const users = await prisma.user.findMany({
+  //   include: {
+  //     articles: true,
+  //   },
+  // });
 
-app.post('/api/v1/users', async (req, res, next) => {
-  try {
-    const user = UserCreateInputSchema.parse(req.body);
+  // Create article and associate it with user
+  // const article = await prisma.article.create({
+  //   data: {
+  //     title: 'Johns First Article',
+  //     body: 'This is Johns first article',
+  //     author: {
+  //       connect: {
+  //         id: 1,
+  //       },
+  //     },
+  //   },
+  // });
 
-    const newUser = await prisma.user.create({
-      data: user,
-    });
+  // Get all articles
+  // const articles = await prisma.article.findMany();
 
-    res.status(201).json({
-      status: 'success',
-      data: newUser,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
+  // Create user and article in one go
+  // const user = await prisma.user.create({
+  //   data: {
+  //     name: 'Elon Musk',
+  //     email: 'elon@gmail.com',
+  //     articles: {
+  //       create: {
+  //         title: 'Elon Musk Article',
+  //         body: 'This is Elon Musks article',
+  //       },
+  //     },
+  //   },
+  //   include: {
+  //     articles: true,
+  //   },
+  // });
 
-app.get('/api/v1/users', async (_, res, next) => {
-  try {
-    const users = await prisma.user.findMany({
-      where: {
-        name: 'Jane',
-      },
-      include: {
-        userPreference: true,
-      },
-    });
+  // Create another article
+  // const article = await prisma.article.create({
+  //   data: {
+  //     title: 'Elon Musk Article 2',
+  //     body: 'This is Elon Musks second article',
+  //     author: {
+  //       connect: {
+  //         id: 2,
+  //       },
+  //     },
+  //   },
+  // });
 
-    if (users.length === 0) {
-      throw new Error('User not found');
-    }
+  // Loop over elon articles
+  // users.forEach((user) => {
+  //   console.log(`User: ${user.name}, Email: ${user.email}`);
+  //   console.log(`Articles:`);
+  //
+  //   user.articles.forEach((article) => {
+  //     console.log(`-Title: ${article.title}, Body: ${article.body}`);
+  //   });
+  //   console.log(`\n`);
+  // });
 
-    res.status(200).json({
-      status: 'success',
-      count: users.length,
-      data: {
-        users,
-      },
-    });
-  } catch (e) {
-    next(e);
-  }
-});
+  // Update user
+  // const user = await prisma.user.update({
+  //   where: {
+  //     id: 1,
+  //   },
+  //   data: {
+  //     name: 'John Doe 2',
+  //   },
+  // });
 
-app.patch('/api/v1/users/:id', async (req, res, next) => {
-  try {
-    // const { id } = req.params;
-    const userData = UserUpdateInputSchema.parse(req.body);
+  // Remove article
+  const article = await prisma.article.delete({
+    where: {
+      id: 2,
+    },
+  });
 
-    const user = await prisma.user.update({
-      where: {
-        email: 'jane@test.com',
-      },
-      data: userData,
-    });
+  console.log(article);
+}
 
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    res.status(200).json({
-      status: 'success',
-      data: user,
-    });
-  } catch (e) {
-    next(e);
-  }
-});
-
-app.use(errorMiddleware);
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => await prisma.$disconnect());
